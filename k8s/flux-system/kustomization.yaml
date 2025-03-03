@@ -6,6 +6,7 @@ resources:
 patches:
   - target:
       kind: Deployment
+      labelSelector: "app.kubernetes.io/part-of=flux"
     patch: |-
       - op: add
         path: /spec/template/spec/tolerations
