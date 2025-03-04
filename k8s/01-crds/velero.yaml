@@ -1,0 +1,28 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: velero-crds
+  namespace: flux-system
+spec:
+  interval: "1h" # This gets patched
+  url: https://github.com/vmware-tanzu/helm-charts.git
+  ref:
+    tag: "velero-8.5.0"
+  # Exclude everything but the CRD directory
+  ignore: |
+    /*
+    !/charts/velero/crds
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: crds-velero
+  namespace: flux-system
+spec:
+  interval: "6h"
+  sourceRef:
+    kind: GitRepository
+    name: velero-crds
+  prune: false
+  wait: true

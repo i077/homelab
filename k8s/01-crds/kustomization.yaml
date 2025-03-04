@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - csi-external-snapshotter.yaml
   - external-secrets.yaml
+  - velero.yaml
 patches:
   # Specify default fetch interval & timeout
   - target:
