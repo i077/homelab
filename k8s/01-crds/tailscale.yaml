@@ -2,27 +2,28 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-  name: external-secrets
+  name: tailscale-crds
   namespace: flux-system
 spec:
   interval: "1h" # This gets patched
-  url: https://github.com/external-secrets/external-secrets.git
+  url: https://github.com/tailscale/tailscale.git
   ref:
-    semver: "~0.14.0"
-  # Exclude everything but the CRD bundle directory
+    # TODO renovate
+    tag: "v1.80.3"
+  # Exclude everything but the CRD directory
   ignore: |
     /*
-    !/deploy/crds
+    !/cmd/k8s-operator/deploy/crds
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: crds-external-secrets
+  name: crds-tailscale
   namespace: flux-system
 spec:
   interval: "6h"
   sourceRef:
     kind: GitRepository
-    name: external-secrets
+    name: tailscale-crds
   prune: false
   wait: true
