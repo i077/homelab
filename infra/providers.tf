@@ -8,6 +8,10 @@ terraform {
       source  = "tailscale/tailscale"
       version = "~> 0.18.0"
     }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.17.0"
+    }
   }
 
   backend "s3" {
@@ -27,3 +31,5 @@ terraform {
 provider "talos" {}
 
 provider "tailscale" {}
+
+provider "helm" {}

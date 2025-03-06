@@ -22,7 +22,7 @@
         ...
       }: {
         devshells.default = {
-          packages = with pkgs; [fluxcd talosctl kubectl k9s kubernetes-helm nil];
+          packages = with pkgs; [cilium-cli fluxcd talosctl kubectl k9s kubernetes-helm nil];
           commands = [
             {package = config.treefmt.build.wrapper;}
             {
@@ -31,7 +31,7 @@
                 TOFU=${pkgs.lib.getExe pkgs.opentofu}
                 verb="$1"
                 case $verb in
-                  refresh|init|state|plan|apply|destroy|import|test) op run -- $TOFU "$@";;
+                  refresh|init|state|plan|apply|destroy|import|test|console) op run -- $TOFU "$@";;
                   *) $TOFU "$@";; 
                 esac
               '';

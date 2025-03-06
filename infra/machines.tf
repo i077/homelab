@@ -6,15 +6,47 @@ locals {
     environment = ["TS_AUTHKEY=${tailscale_tailnet_key.tsauth.key}", "TS_ACCEPT_DNS=true", "TS_EXTRA_ARGS=--reset"]
   })
 
+  # Replace CNI & kube-proxy with Cilium
+  cni_patch_controlplane = jsonencode({
+    cluster = {
+      inlineManifests = [{ name = "cilium", contents = data.helm_template.cilium.manifest }]
+    }
+  })
+
+  cni_patch = jsonencode({
+    machine = {
+      features = {
+        hostDNS = {
+          enabled = true
+          # Disable forwarding DNS to host, since this is incompatible with Cilium:
+          # https://www.talos.dev/v1.9/kubernetes-guides/network/deploying-cilium/#known-issues
+          forwardKubeDNSToHost = false
+        }
+      }
+    }
+
+    cluster = {
+      proxy = { disabled = true }
+      network = {
+        cni = { name = "none" }
+      }
+    }
+  })
+
   cluster_config_patch = jsonencode({
     machine = {
       certSANs = [local.cluster_endpoint]
     }
     cluster = {
-      network = { dnsDomain = "home.arpa" }
       apiServer = {
         certSANs = [local.cluster_endpoint]
       }
+    }
+  })
+
+  cluster_domain_patch = jsonencode({
+    cluster = {
+      network = { dnsDomain = "home.arpa" }
     }
   })
 }
@@ -44,7 +76,10 @@ resource "talos_machine_configuration_apply" "cubone" {
       }
     }),
     local.tailnet_patch,
-    local.cluster_config_patch
+    local.cluster_config_patch,
+    local.cluster_domain_patch,
+    local.cni_patch_controlplane,
+    local.cni_patch
   ]
 }
 
@@ -52,7 +87,7 @@ module "image_growlithe" {
   source = "./modules/image-factory"
 
   talos_version   = local.talos_version
-  extension_names = ["intel-ucode", "tailscale"]
+  extension_names = ["intel-ucode", "tailscale", "zfs"]
 }
 
 # Data plane
@@ -68,9 +103,14 @@ resource "talos_machine_configuration_apply" "growlithe" {
           disk  = "/dev/nvme0n1"
           image = module.image_growlithe.installer_url
         }
+        kernel = {
+          modules = [{ name = "zfs" }]
+        }
         network = { hostname = "growlithe" }
       }
     }),
     local.tailnet_patch,
+    local.cluster_domain_patch,
+    local.cni_patch
   ]
 }
