@@ -10,7 +10,7 @@ patches:
   # Specify default fetch interval & timeout
   - target:
       group: source.toolkit.fluxcd.io
-      version: v1beta2
+      version: v1
       kind: HelmRepository
     patch: |-
       - op: add
