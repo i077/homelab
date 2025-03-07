@@ -6,6 +6,7 @@ resources:
   - external-secrets.yaml
   - tailscale.yaml
   - velero.yaml
+  - zfs-localpv.yaml
 patches:
   # Specify default fetch interval & timeout
   - target:
