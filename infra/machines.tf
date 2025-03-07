@@ -49,6 +49,16 @@ locals {
       network = { dnsDomain = "home.arpa" }
     }
   })
+
+  kubelet_ca_patch = jsonencode({
+    machine = {
+      kubelet = {
+        extraArgs = {
+          rotate-server-certificates = true
+        }
+      }
+    }
+  })
 }
 
 module "image_cubone" {
@@ -75,6 +85,7 @@ resource "talos_machine_configuration_apply" "cubone" {
         network = { hostname = "cubone" }
       }
     }),
+    local.kubelet_ca_patch,
     local.tailnet_patch,
     local.cluster_config_patch,
     local.cluster_domain_patch,
@@ -109,6 +120,7 @@ resource "talos_machine_configuration_apply" "growlithe" {
         network = { hostname = "growlithe" }
       }
     }),
+    local.kubelet_ca_patch,
     local.tailnet_patch,
     local.cluster_domain_patch,
     local.cni_patch

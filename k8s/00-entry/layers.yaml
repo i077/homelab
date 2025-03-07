@@ -11,3 +11,18 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: addons
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./k8s/02-addons
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  dependsOn:
+    - name: crds
