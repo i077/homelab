@@ -5,6 +5,7 @@ resources:
   - kubelet-serving-cert-approver.yaml
   - metrics-server.yaml
   - openebs
+  - secrets
 patches:
   # Label namespaces
   - target:
