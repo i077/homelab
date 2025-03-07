@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - kubelet-serving-cert-approver.yaml
   - metrics-server.yaml
+  - openebs
 patches:
   # Label namespaces
   - target:

@@ -1,0 +1,45 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: zfs-localpv
+  namespace: openebs
+spec:
+  interval: 6h
+  chart:
+    spec:
+      # Rather than install the OpenEBS chart, I'm installing just one of its dependencies
+      # since there's no way to disable the local path provisioner, which I don't plan to use.
+      chart: zfs-localpv
+      sourceRef:
+        kind: HelmRepository
+        name: zfs-localpv
+        namespace: flux-system
+      version: "~2.7.1"
+  values:
+    crds:
+      zfsLocalPv:
+        enabled: false
+      csi:
+        volumeSnapshots:
+          enabled: false
+
+    zfsController:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          cpu: 50m
+          memory: 256Mi
+
+    zfsNode:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          cpu: 100m
+          memory: 256Mi
+      # Store keys in the EPHEMERAL partition
+      encrKeysDir: /var/zfskeys

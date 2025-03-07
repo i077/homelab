@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - external-secrets.yaml
   - metrics-server.yaml
+  - zfs-localpv.yaml
   - vmware-tanzu.yaml
 patches:
   # Specify default fetch interval & timeout
