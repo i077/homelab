@@ -16,6 +16,10 @@ terraform {
       source  = "hashicorp/random"
       version = "~> 3.7.1"
     }
+    http = {
+      source  = "hashicorp/http"
+      version = "~> 3.4.5"
+    }
   }
 
   backend "s3" {

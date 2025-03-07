@@ -9,7 +9,10 @@ locals {
   # Replace CNI & kube-proxy with Cilium
   cni_patch_controlplane = jsonencode({
     cluster = {
-      inlineManifests = [{ name = "cilium", contents = data.helm_template.cilium.manifest }]
+      inlineManifests = [
+        { name = "01-gateway-api", contents = data.http.gateway_api.response_body },
+        { name = "02-cilium", contents = data.helm_template.cilium.manifest }
+      ]
     }
   })
 

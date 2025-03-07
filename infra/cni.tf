@@ -28,10 +28,16 @@ data "helm_template" "cilium" {
     k8sServiceHost = "localhost"
     k8sServicePort = 7445
 
-    gatewayApi = {
+    gatewayAPI = {
       enabled           = true
       enableAlpn        = true
       enableAppProtocol = true
+      gatewayClass      = { create = "true" }
     }
   })]
+}
+
+# Grab the Gateway API CRDs, a prereq. for Cilium's Gateway implementation
+data "http" "gateway_api" {
+  url = "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml"
 }
