@@ -22,7 +22,7 @@
         ...
       }: {
         devshells.default = {
-          packages = with pkgs; [cilium-cli fluxcd talosctl kubectl k9s kubernetes-helm nil];
+          packages = with pkgs; [cilium-cli fluxcd talosctl kubectl k9s kubernetes-helm nil velero];
           commands = [
             {package = config.treefmt.build.wrapper;}
             {

@@ -5,3 +5,5 @@ resources:
   - release-zfs-localpv.yaml
   - storageclass.yaml
   - snapshotclass.yaml
+  - release-velero.yaml
+  - backupstoragelocation.yaml

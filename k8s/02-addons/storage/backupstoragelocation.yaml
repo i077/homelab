@@ -1,0 +1,62 @@
+---
+# Credentials for accessing the bucket
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: velero-backup-creds
+  namespace: storage
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  dataFrom:
+    - extract:
+        key: "Velero B2 key"
+  target:
+    template:
+      type: Opaque
+      data:
+        credentials: |
+          [default]
+          aws_access_key_id={{ .username }}
+          aws_secret_access_key={{ .password }}
+---
+# Credentials for the backup repositories
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: velero-repo-credentials
+  namespace: storage
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  dataFrom:
+    - extract:
+        key: "Velero repository"
+  target:
+    template:
+      type: Opaque
+      data:
+        repository-password: "{{ .password }}"
+---
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: default
+  namespace: storage
+spec:
+  provider: aws
+  objectStorage:
+    bucket: imranh-homelab
+    prefix: velero
+  credential:
+    name: velero-backup-creds
+    key: credentials
+  config:
+    region: us-east-005
+    s3Url: https://s3.us-east-005.backblazeb2.com
+    serverSideEncryption: AES256
+
+    # B2 does not support checksum headers
+    checksumAlgorithm: ""
