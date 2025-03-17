@@ -1,0 +1,16 @@
+# Server data should be stored in this volume under
+# /Library/Application Support/Plex Media Server/
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-config
+  namespace: plex
+spec:
+  storageClassName: zfs
+  resources:
+    requests:
+      storage: 16Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
