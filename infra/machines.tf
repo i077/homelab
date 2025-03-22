@@ -18,6 +18,13 @@ locals {
 
   cni_patch = jsonencode({
     machine = {
+      kubelet = {
+        nodeIP = {
+          # Only use IP from the LAN's subnet
+          validSubnets = ["192.168.0.0/16"]
+        }
+      }
+
       features = {
         hostDNS = {
           enabled = true
