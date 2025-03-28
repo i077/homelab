@@ -7,6 +7,7 @@ resources:
   - metrics-server.yaml
   - zfs-localpv.yaml
   - vmware-tanzu.yaml
+  - plex.yaml
 patches:
   # Specify default fetch interval & timeout
   - target:
