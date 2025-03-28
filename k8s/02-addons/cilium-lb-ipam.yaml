@@ -19,3 +19,4 @@ spec:
       # Control plane nodes should not be used for north-south traffic
       - key: node-role.kubernetes.io/control-plane
         operator: DoesNotExist
+  loadBalancerIPs: true

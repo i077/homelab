@@ -21,6 +21,9 @@ spec:
       # Sonic Analysis only works on amd64 architectures for now
       kubernetes.io/arch: amd64
 
+    service:
+      type: LoadBalancer
+
     pms:
       configExistingClaim: plex-config
       resources:
