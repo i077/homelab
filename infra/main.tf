@@ -2,8 +2,8 @@ locals {
   cluster_name     = "homelab"
   cluster_endpoint = "kube.imranh.org"
 
-  k8s_version   = "1.32.2"
-  talos_version = "1.9.4"
+  k8s_version   = "1.32.3"
+  talos_version = "1.9.5"
 }
 
 resource "talos_machine_secrets" "this" {}
