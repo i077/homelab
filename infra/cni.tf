@@ -13,6 +13,14 @@ data "helm_template" "cilium" {
     ipam                 = { mode = "kubernetes" }
     kubeProxyReplacement = true
 
+    bpf = {
+      enabled = true
+
+      # Allow external access to ClusterIP services, to let the Tailscale extension act as a subnet
+      # router.
+      lbExternalClusterIP = true
+    }
+
     l2Announcements = {
       enabled = true
     }

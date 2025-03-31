@@ -3,7 +3,24 @@ locals {
     apiVersion  = "v1alpha1"
     kind        = "ExtensionServiceConfig"
     name        = "tailscale"
-    environment = ["TS_AUTHKEY=${tailscale_tailnet_key.tsauth.key}", "TS_ACCEPT_DNS=true", "TS_EXTRA_ARGS=--reset"]
+    environment = [
+      "TS_AUTHKEY=${tailscale_tailnet_key.tsauth.key}",
+      "TS_ACCEPT_DNS=true",
+      "TS_EXTRA_ARGS=--reset"
+    ]
+  })
+
+  tailnet_worker_patch = jsonencode({
+    apiVersion  = "v1alpha1"
+    kind        = "ExtensionServiceConfig"
+    name        = "tailscale"
+    environment = [
+      "TS_AUTHKEY=${tailscale_tailnet_key.tsauth.key}",
+      "TS_ACCEPT_DNS=true",
+      "TS_USERSPACE=false",
+      "TS_ROUTES=10.96.0.0/12,10.244.0.0/16",
+      "TS_EXTRA_ARGS=--reset"
+    ]
   })
 
   # Replace CNI & kube-proxy with Cilium
@@ -139,7 +156,7 @@ resource "talos_machine_configuration_apply" "growlithe" {
       }
     }),
     local.kubelet_ca_patch,
-    local.tailnet_patch,
+    local.tailnet_worker_patch,
     local.cluster_domain_patch,
     local.cni_patch
   ]
