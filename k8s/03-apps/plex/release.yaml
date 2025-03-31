@@ -41,4 +41,3 @@ spec:
     extraVolumeMounts:
       - name: plex-data
         mountPath: /data
-        readOnly: true

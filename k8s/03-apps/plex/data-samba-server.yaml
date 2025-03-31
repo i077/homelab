@@ -1,0 +1,114 @@
+---
+# ExternalSecret for Samba credentials
+# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/external-secrets.io/externalsecret_v1beta1.json
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: samba-credentials
+  namespace: plex
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  dataFrom:
+    - extract:
+        key: "Plex SMB share"
+  target:
+    template:
+      type: Opaque
+      data:
+        USER: "{{ .username }}"
+        PASS: "{{ .password }}"
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.32.3-standalone-strict/deployment.json
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-samba-server
+  namespace: plex
+  labels:
+    app: data-samba-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-samba-server
+  template:
+    metadata:
+      labels:
+        app: data-samba-server
+    spec:
+      # Schedule on the same node as the Plex server
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - plex-media-server
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: samba-server
+          image: dockurr/samba:4.21
+          ports:
+            - name: smb
+              containerPort: 445
+              protocol: TCP
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: data-volume
+              mountPath: /storage
+          resources:
+            limits:
+              cpu: 200m
+              memory: 64Mi
+            requests:
+              cpu: 100m
+              memory: 32Mi
+          env:
+            - name: NAME # SMB share name
+              value: "Plex"
+          envFrom:
+            - secretRef:
+                name: samba-credentials
+          readinessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            failureThreshold: 3
+            timeoutSeconds: 5
+            exec:
+              command:
+                - smbclient
+                - --configfile=/etc/samba.conf
+                - -L
+                - "\\localhost"
+                - -U
+                - "%"
+                - -m
+                - SMB3
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: plex-data
+        - name: samba-dir
+          emptyDir: {}
+---
+# Service
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.32.3-standalone-strict/service.json
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-smb
+  namespace: plex
+spec:
+  selector:
+    app: data-samba-server
+  ports:
+    - protocol: TCP
+      port: 445
+      name: smb

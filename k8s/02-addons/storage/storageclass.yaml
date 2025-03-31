@@ -12,6 +12,7 @@ parameters:
   compression: zstd
   fstype: zfs
   dedup: "off"
+  shared: "yes"
 provisioner: zfs.csi.openebs.io
 # Let the Kubernetes scheduler decide where PV-bound Pods initially go
 volumeBindingMode: WaitForFirstConsumer

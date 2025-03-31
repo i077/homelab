@@ -6,3 +6,4 @@ resources:
   - pvc-config.yaml
   - pvc-data.yaml
   - release.yaml
+  - data-samba-server.yaml
