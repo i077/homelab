@@ -31,17 +31,17 @@
                 TOFU=${pkgs.lib.getExe pkgs.opentofu}
                 verb="$1"
                 case $verb in
-                  refresh|init|state|plan|apply|destroy|import|test|console) op run -- $TOFU "$@";;
-                  *) $TOFU "$@";; 
+                  refresh|init|state|plan|apply|destroy|import|test|console|output) op run -- $TOFU "$@";;
+                  *) $TOFU "$@";;
                 esac
               '';
             }
           ];
 
-          env = [
-            {name = "TAILSCALE_API_KEY"; value = "op://Private/Tailscale/api key";}
-            {name = "AWS_ACCESS_KEY_ID"; value = "op://Private/Backblaze/application key/id";}
-            {name = "AWS_SECRET_ACCESS_KEY"; value = "op://Private/Backblaze/application key/key";}
+          env = let nv = pkgs.lib.nameValuePair; in [
+            (nv "TAILSCALE_API_KEY" "op://Private/Tailscale/api key")
+            (nv "AWS_ACCESS_KEY_ID" "op://Private/Backblaze/application key/id")
+            (nv "AWS_SECRET_ACCESS_KEY" "op://Private/Backblaze/application key/key")
           ];
         };
         treefmt = {
