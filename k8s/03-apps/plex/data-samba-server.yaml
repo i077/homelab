@@ -1,6 +1,6 @@
 ---
 # ExternalSecret for Samba credentials
-# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/external-secrets.io/externalsecret_v1beta1.json
+# yaml-language-server: $schema=https://kubeschema.imranh.org/external-secrets.io/v1beta1/externalsecret
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
@@ -20,7 +20,7 @@ spec:
         USER: "{{ .username }}"
         PASS: "{{ .password }}"
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.32.3-standalone-strict/deployment.json
+# yaml-language-server: $schema=https://kubeschema.imranh.org/apps/v1/deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:

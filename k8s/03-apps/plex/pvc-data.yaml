@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/core/v1/persistentvolumeclaim
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

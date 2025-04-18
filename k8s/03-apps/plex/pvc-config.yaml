@@ -1,6 +1,7 @@
 # Server data should be stored in this volume under
 # /Library/Application Support/Plex Media Server/
 ---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/core/v1/persistentvolumeclaim
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/external-secrets.io/v1beta1/externalsecret
 # Credentials for accessing the bucket
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
@@ -21,6 +22,7 @@ spec:
           aws_access_key_id={{ .username }}
           aws_secret_access_key={{ .password }}
 ---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/external-secrets.io/v1beta1/externalsecret
 # Credentials for the backup repositories
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
@@ -40,6 +42,7 @@ spec:
       data:
         repository-password: "{{ .password }}"
 ---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/velero.io/v1/backupstoragelocation
 apiVersion: velero.io/v1
 kind: BackupStorageLocation
 metadata:

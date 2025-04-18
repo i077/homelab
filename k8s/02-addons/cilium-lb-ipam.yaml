@@ -1,6 +1,6 @@
 ---
-# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/cilium.io/ciliumloadbalancerippool_v2alpha1.json
-apiVersion: "cilium.io/v2alpha1"
+# yaml-language-server: $schema=https://kubeschema.imranh.org/cilium.io/v2alpha1/ciliumloadbalancerippool
+apiVersion: cilium.io/v2alpha1
 kind: CiliumLoadBalancerIPPool
 metadata:
   name: default
@@ -8,7 +8,7 @@ spec:
   blocks:
     - cidr: "192.168.2.0/24"
 ---
-# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/cilium.io/ciliuml2announcementpolicy_v2alpha1.json
+# yaml-language-server: $schema=https://kubeschema.imranh.org/cilium.io/v2alpha1/ciliuml2announcementpolicy
 apiVersion: cilium.io/v2alpha1
 kind: CiliumL2AnnouncementPolicy
 metadata:

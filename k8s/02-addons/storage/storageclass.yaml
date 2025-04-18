@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/storage.k8s.io/v1/storageclass
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:

@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/source.toolkit.fluxcd.io/v1/gitrepository
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
@@ -15,6 +16,7 @@ spec:
     /*
     !/cmd/k8s-operator/deploy/crds
 ---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/kustomize.toolkit.fluxcd.io/v1/kustomization
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
