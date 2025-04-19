@@ -51,8 +51,8 @@ metadata:
 spec:
   provider: aws
   objectStorage:
-    bucket: imranh-homelab
-    prefix: velero
+    bucket: imranh-backup
+    prefix: homelab/
   credential:
     name: velero-backup-creds
     key: credentials
