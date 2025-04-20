@@ -14,7 +14,7 @@ spec:
         kind: HelmRepository
         name: vmware-tanzu
         namespace: flux-system
-      version: 8.5.0
+      version: 8.7.2
   values:
     namespace: {}
     # CRDs managed in layer 01
