@@ -9,6 +9,7 @@ spec:
   interval: 10m0s
   path: ./k8s/01-crds
   prune: true
+  wait: true
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -23,6 +24,7 @@ spec:
   interval: 10m0s
   path: ./k8s/02-addons
   prune: true
+  wait: true
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -39,6 +41,7 @@ spec:
   interval: 10m0s
   path: ./k8s/03-apps
   prune: true
+  wait: true
   sourceRef:
     kind: GitRepository
     name: flux-system
