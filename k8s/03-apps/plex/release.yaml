@@ -14,7 +14,7 @@ spec:
         kind: HelmRepository
         name: plex
         namespace: flux-system
-      version: "~0.8.0"
+      version: 0.8.0
   interval: 1h
   values:
     nodeSelector:
