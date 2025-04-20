@@ -2,6 +2,18 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
   "flux": {
-    "fileMatch": ["(?:^|/)gotk-components\\.ya?ml$", "k8s/.*\\.yaml"]
-  }
+    "fileMatch": ["(?:^|/)gotk-components\\.ya?ml$", "k8s/.+\\.yaml"]
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Process CRD dependencies",
+      "fileMatch": ["cluster/.+\\.ya?ml$"],
+      "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}helm{{/if}}",
+      "matchStrings": [
+        "registryUrl=(?<registryUrl>\\S+) chart=(?<depName>\\S+)\n.*?(?<currentValue>[^-\\s]*)\n",
+        "datasource=(?<datasource>\\S+) image=(?<depName>\\S+)\n.*?-\\s(.*?)\\/(?<currentValue>[^/]+)\\/[^/]+\n"
+      ]
+    }
+  ]
 }
