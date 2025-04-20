@@ -26,5 +26,5 @@ spec:
   sourceRef:
     kind: GitRepository
     name: zfs-localpv-crds
-  prune: false
+  prune: true
   wait: true

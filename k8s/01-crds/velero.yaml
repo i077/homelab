@@ -26,5 +26,5 @@ spec:
   sourceRef:
     kind: GitRepository
     name: velero-crds
-  prune: false
+  prune: true
   wait: true
