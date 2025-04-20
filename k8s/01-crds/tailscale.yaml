@@ -9,7 +9,7 @@ spec:
   interval: "1h" # This gets patched
   url: https://github.com/tailscale/tailscale.git
   ref:
-    tag: "v1.80.3"
+    tag: "v1.82.5"
   # Exclude everything but the CRD directory
   ignore: |
     /*
