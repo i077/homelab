@@ -1,8 +1,8 @@
 locals {
   tailnet_patch = jsonencode({
-    apiVersion  = "v1alpha1"
-    kind        = "ExtensionServiceConfig"
-    name        = "tailscale"
+    apiVersion = "v1alpha1"
+    kind       = "ExtensionServiceConfig"
+    name       = "tailscale"
     environment = [
       "TS_AUTHKEY=${tailscale_tailnet_key.tsauth.key}",
       "TS_ACCEPT_DNS=true",
@@ -11,9 +11,9 @@ locals {
   })
 
   tailnet_worker_patch = jsonencode({
-    apiVersion  = "v1alpha1"
-    kind        = "ExtensionServiceConfig"
-    name        = "tailscale"
+    apiVersion = "v1alpha1"
+    kind       = "ExtensionServiceConfig"
+    name       = "tailscale"
     environment = [
       "TS_AUTHKEY=${tailscale_tailnet_key.tsauth.key}",
       "TS_ACCEPT_DNS=true",
