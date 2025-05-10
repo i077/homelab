@@ -9,3 +9,4 @@ resources:
   - snapshotclass.yaml
   - release-velero.yaml
   - backupstoragelocation.yaml
+  - schedule-daily.yaml

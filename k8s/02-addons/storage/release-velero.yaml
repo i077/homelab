@@ -42,7 +42,7 @@ spec:
         memory: 512Mi
 
     configuration:
-      features: [EnableCSI]
+      features: EnableCSI
       repositoryMaintenanceJob:
         requests:
           cpu: 500m

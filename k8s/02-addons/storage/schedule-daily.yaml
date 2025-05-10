@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/velero.io/v1/schedule
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: daily
+  namespace: storage
+spec:
+  schedule: "0 6 * * *"
+  template:
+    snapshotMoveData: true
+    includedResources:
+      - persistentvolumeclaims
+    labelSelector:
+      matchLabels:
+        backup: daily
+    ttl: 720h

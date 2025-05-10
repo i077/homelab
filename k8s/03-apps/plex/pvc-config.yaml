@@ -7,6 +7,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: plex-config
   namespace: plex
+  labels:
+    backup: daily
 spec:
   storageClassName: zfs
   resources:
