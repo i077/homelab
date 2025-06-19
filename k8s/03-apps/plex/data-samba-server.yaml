@@ -1,7 +1,7 @@
 ---
 # ExternalSecret for Samba credentials
-# yaml-language-server: $schema=https://kubeschema.imranh.org/external-secrets.io/v1beta1/externalsecret
-apiVersion: external-secrets.io/v1beta1
+# yaml-language-server: $schema=https://kubeschema.imranh.org/external-secrets.io/v1/externalsecret
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: samba-credentials
