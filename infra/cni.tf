@@ -21,7 +21,7 @@ resource "tls_self_signed_cert" "cilium_common_ca" {
 data "helm_template" "cilium" {
   repository   = "https://helm.cilium.io/"
   chart        = "cilium"
-  version      = "1.17.1"
+  version      = "1.18.2"
   kube_version = local.k8s_version
 
   name      = "cilium"
