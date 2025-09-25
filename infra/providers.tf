@@ -2,15 +2,15 @@ terraform {
   required_providers {
     talos = {
       source  = "siderolabs/talos"
-      version = "~> 0.8.0"
+      version = "~> 0.9.0"
     }
     tailscale = {
       source  = "tailscale/tailscale"
-      version = "~> 0.20.0"
+      version = "~> 0.22.0"
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "~> 2.17.0"
+      version = "~> 3.0"
     }
     random = {
       source  = "hashicorp/random"
