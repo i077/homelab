@@ -99,7 +99,7 @@ spec:
           emptyDir: {}
 ---
 # Service
-# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.32.3-standalone-strict/service.json
+# yaml-language-server: $schema=https://kubeschema.imranh.org/core/v1/service
 apiVersion: v1
 kind: Service
 metadata:
