@@ -43,13 +43,6 @@ spec:
 
     configuration:
       features: EnableCSI
-      repositoryMaintenanceJob:
-        requests:
-          cpu: 500m
-          memory: 512Mi
-        limits:
-          cpu: 1000m
-          memory: 1024Mi
 
     initContainers:
       - name: velero-plugin-for-aws
