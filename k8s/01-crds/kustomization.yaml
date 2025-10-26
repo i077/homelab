@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - csi-external-snapshotter.yaml
   - external-secrets.yaml
-  - tailscale.yaml
   - velero.yaml
   - zfs-localpv.yaml
 patches:
