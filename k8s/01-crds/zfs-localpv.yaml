@@ -9,7 +9,7 @@ spec:
   interval: "1h" # This gets patched
   url: https://github.com/openebs/zfs-localpv.git
   ref:
-    tag: v2.8.0
+    tag: v2.9.0
   # Exclude everything but the CRD directory
   ignore: |
     /*
