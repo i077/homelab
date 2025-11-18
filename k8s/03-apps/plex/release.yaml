@@ -28,9 +28,10 @@ spec:
       configExistingClaim: plex-config
       resources:
         requests:
-          cpu: 2000m
+          cpu: 500m
           memory: 2Gi
         limits:
+          cpu: 2000m
           memory: 4Gi
 
     extraVolumes:
