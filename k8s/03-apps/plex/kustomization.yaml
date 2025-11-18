@@ -8,3 +8,4 @@ resources:
   - pvc-data.yaml
   - release.yaml
   - data-samba-server.yaml
+  - navidrome.yaml

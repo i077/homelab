@@ -1,0 +1,93 @@
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/core/v1/persistentvolumeclaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: navidrome-data
+  namespace: plex
+  labels:
+    backup: daily
+spec:
+  storageClassName: zfs
+  resources:
+    requests:
+      storage: 4Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/apps/v1/deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: navidrome
+  namespace: plex
+  labels:
+    app.kubernetes.io/name: navidrome
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: navidrome
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: navidrome
+    spec:
+      containers:
+        - name: navidrome
+          image: ghcr.io/navidrome/navidrome:0.58.5
+          ports:
+            - containerPort: 4353
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+          env:
+            - name: ND_SCANSCHEDULE
+              value: "12h"
+            - name: ND_SESSIONTIMEOUT
+              value: "24h"
+            - name: ND_LOGLEVEL
+              value: "info"
+            - name: ND_ENABLETRANSCODINGCONFIG
+              value: "false"
+            - name: ND_TRANSCODINGCACHESIZE
+              value: "512MB"
+            - name: ND_ENABLESTARRATING
+              value: "false"
+            - name: ND_ENABLEFAVOURITES
+              value: "false"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: media
+              mountPath: /music
+              subPath: Music
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: navidrome-data
+        - name: media
+          persistentVolumeClaim:
+            claimName: plex-data
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/core/v1/service
+apiVersion: v1
+kind: Service
+metadata:
+  name: navidrome
+  namespace: plex
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      targetPort: 4533
+      port: 4533
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: navidrome

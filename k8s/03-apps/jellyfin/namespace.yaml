@@ -1,6 +1,0 @@
----
-# yaml-language-server: $schema=https://kubeschema.imranh.org/core/v1/namespace
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: jellyfin
