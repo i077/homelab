@@ -16,6 +16,27 @@ spec:
   accessModes:
     - ReadWriteOnce
 ---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/external-secrets.io/v1/externalsecret
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: navidrome-lastfm-api
+  namespace: plex
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  dataFrom:
+    - extract:
+        key: "Last.fm API"
+  target:
+    template:
+      engineVersion: v2
+      type: Opaque
+      data:
+        ND_LASTFM_APIKEY: "{{ .username }}"
+        ND_LASTFM_SECRET: "{{ .credential }}"
+---
 # yaml-language-server: $schema=https://kubeschema.imranh.org/apps/v1/deployment
 apiVersion: apps/v1
 kind: Deployment
@@ -62,6 +83,9 @@ spec:
               value: "false"
             - name: ND_ENABLEFAVOURITES
               value: "false"
+          envFrom:
+            - secretRef:
+                name: navidrome-lastfm-api
           volumeMounts:
             - name: data
               mountPath: /data
