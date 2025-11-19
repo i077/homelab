@@ -37,6 +37,18 @@ spec:
         ND_LASTFM_APIKEY: "{{ .username }}"
         ND_LASTFM_SECRET: "{{ .credential }}"
 ---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/core/v1/configmap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: navidrome-config
+  namespace: plex
+data:
+  navidrome.toml: |-
+    TranscodingCacheSize = "4GB"
+    Scanner.Enabled = true
+    Scanner.Schedule = "12h"
+---
 # yaml-language-server: $schema=https://kubeschema.imranh.org/apps/v1/deployment
 apiVersion: apps/v1
 kind: Deployment
@@ -69,20 +81,8 @@ spec:
               cpu: 1000m
               memory: 1Gi
           env:
-            - name: ND_SCANSCHEDULE
-              value: "12h"
-            - name: ND_SESSIONTIMEOUT
-              value: "24h"
-            - name: ND_LOGLEVEL
-              value: "info"
-            - name: ND_ENABLETRANSCODINGCONFIG
-              value: "false"
-            - name: ND_TRANSCODINGCACHESIZE
-              value: "512MB"
-            - name: ND_ENABLESTARRATING
-              value: "false"
-            - name: ND_ENABLEFAVOURITES
-              value: "false"
+            - name: ND_CONFIGFILE
+              value: /etc/navidrome/navidrome.toml
           envFrom:
             - secretRef:
                 name: navidrome-lastfm-api
@@ -92,7 +92,12 @@ spec:
             - name: media
               mountPath: /music
               subPath: Music
+            - name: config
+              mountPath: /etc/navidrome
       volumes:
+        - name: config
+          configMap:
+            name: navidrome-config
         - name: data
           persistentVolumeClaim:
             claimName: navidrome-data
