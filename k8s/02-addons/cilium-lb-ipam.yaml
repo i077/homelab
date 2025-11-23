@@ -6,7 +6,8 @@ metadata:
   name: default
 spec:
   blocks:
-    - cidr: "192.168.3.0/24"
+    - start: "192.168.1.75"
+      stop: "192.168.1.99"
 ---
 # yaml-language-server: $schema=https://kubeschema.imranh.org/cilium.io/v2alpha1/ciliuml2announcementpolicy
 apiVersion: cilium.io/v2alpha1
@@ -20,3 +21,6 @@ spec:
       - key: node-role.kubernetes.io/control-plane
         operator: DoesNotExist
   loadBalancerIPs: true
+  externalIPs: true
+  interfaces:
+    - ^enp[0-9]+s[0-9]+

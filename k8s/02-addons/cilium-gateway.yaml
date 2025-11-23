@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/gateway.networking.k8s.io/v1/gateway
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: cilium
+  namespace: default
+spec:
+  gatewayClassName: cilium
+  listeners:
+    - name: cf-http
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: All
+    # - name: cf-https
+    #   port: 443
+    #   protocol: HTTPS
+    #   tls:
+    #     mode: Terminate
+    #   allowedRoutes:
+    #     namespaces:
+    #       from: All
