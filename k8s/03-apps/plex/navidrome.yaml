@@ -92,6 +92,9 @@ spec:
             - name: media
               mountPath: /music
               subPath: Music
+            - name: media
+              mountPath: /new_music
+              subPath: New Music
             - name: config
               mountPath: /etc/navidrome
       volumes:
