@@ -51,7 +51,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
         - name: samba-server
-          image: dockurr/samba:4.21
+          image: dockurr/samba:4.22
           ports:
             - name: smb
               containerPort: 445
