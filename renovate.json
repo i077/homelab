@@ -9,6 +9,9 @@
       "/k8s/.+\\.yaml/"
     ]
   },
+  "kubernetes": {
+    "managerFilePatterns": ["/\\.yaml$/"]
+  },
   "customManagers": [
     {
       "customType": "regex",
