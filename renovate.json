@@ -1,6 +1,32 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": ["config:recommended", ":semanticCommitsDisabled"],
+  "commitMessageAction": "{{currentVersion}} -> {{newVersion}}",
+  "commitMessageTopic": "",
+  "commitMessageExtra": "",
+  "commitMessageSuffix": "",
+  "packageRules": [
+    {
+      "matchDatasources": ["terraform-provider"],
+      "commitMessagePrefix": "tofu/{{depName}}:",
+      "commitMessageTopic": ""
+    },
+    {
+      "matchDatasources": ["docker"],
+      "commitMessagePrefix": "{{ replace '^.*/' '' depName }}:",
+      "commitMessageTopic": "",
+      "commitMessageExtra": ""
+    },
+    {
+      "matchDatasources": ["helm"],
+      "commitMessagePrefix": "{{ depName }}:",
+      "commitMessageTopic": ""
+    },
+    {
+      "matchDepNames": ["plex-media-server"],
+      "overrideDepName": "plex"
+    }
+  ],
   "flux": {
     "managerFilePatterns": [
       "/(?:^|/)gotk-components\\.ya?ml$/",
