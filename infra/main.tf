@@ -37,5 +37,4 @@ resource "tailscale_tailnet_key" "tsauth" {
   ephemeral     = false
   preauthorized = false
   description   = "Homelab cluster key"
-  tags          = ["tag:k8s"]
 }

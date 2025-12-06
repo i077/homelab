@@ -41,7 +41,7 @@ data "helm_template" "cilium" {
         lbExternalClusterIP = true
       }
 
-      l2Announcements = {
+      l2announcements = {
         enabled = true
       }
 
@@ -81,7 +81,7 @@ data "helm_template" "cilium" {
           auto = {
             enabled              = true
             method               = "cronJob"
-            certValidityDuration = 365 * 3  # 3 years
+            certValidityDuration = 365 * 3       # 3 years
             schedule             = "0 0 1 */4 *" # Every 4 weeks
           }
         }

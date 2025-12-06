@@ -20,6 +20,21 @@ spec:
         USER: "{{ .username }}"
         PASS: "{{ .password }}"
 ---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/core/v1/persistentvolumeclaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: beets-db
+  namespace: plex
+spec:
+  storageClassName: zfs
+  resources:
+    requests:
+      storage: 4Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+---
 # yaml-language-server: $schema=https://kubeschema.imranh.org/apps/v1/deployment
 apiVersion: apps/v1
 kind: Deployment
@@ -91,12 +106,46 @@ spec:
                 - "%"
                 - -m
                 - SMB3
+        - name: beets-flask
+          image: pspitzner/beets-flask:v1.1.2
+          command: [/bin/sh]
+          args:
+            - -c
+            - /repo/entrypoint_user_scripts.sh && /repo/entrypoint.sh
+          ports:
+            - name: http
+              containerPort: 5001
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            runAsUser: 1000
+            runAsGroup: 1000
+          volumeMounts:
+            - name: data-volume
+              mountPath: /data
+            - name: beets-db
+              mountPath: /config
       volumes:
         - name: data-volume
           persistentVolumeClaim:
             claimName: plex-data
+        - name: beets-db
+          persistentVolumeClaim:
+            claimName: beets-db
         - name: samba-dir
           emptyDir: {}
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
 ---
 # Service
 # yaml-language-server: $schema=https://kubeschema.imranh.org/core/v1/service
@@ -112,3 +161,18 @@ spec:
     - protocol: TCP
       port: 445
       name: smb
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/core/v1/service
+apiVersion: v1
+kind: Service
+metadata:
+  name: beets-flask
+  namespace: plex
+spec:
+  selector:
+    app: data-samba-server
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5001
+      name: http

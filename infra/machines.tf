@@ -23,6 +23,15 @@ locals {
     ]
   })
 
+  cloudflared_patch = jsonencode({
+    apiVersion = "v1alpha1"
+    kind       = "ExtensionServiceConfig"
+    name       = "cloudflared"
+    environment = [
+      "TUNNEL_TOKEN=${data.cloudflare_zero_trust_tunnel_cloudflared_token.this.token}"
+    ]
+  })
+
   # Replace CNI & kube-proxy with Cilium
   cni_patch_controlplane = jsonencode({
     cluster = {
@@ -100,7 +109,7 @@ module "image_cubone" {
 resource "talos_machine_configuration_apply" "cubone" {
   client_configuration        = data.talos_client_configuration.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
-  node                        = "192.168.1.163"
+  node                        = "cubone"
 
   config_patches = [
     jsonencode({
@@ -125,7 +134,7 @@ module "image_growlithe" {
   source = "./modules/image-factory"
 
   talos_version   = local.talos_version
-  extension_names = ["intel-ucode", "tailscale", "zfs"]
+  extension_names = ["intel-ucode", "tailscale", "zfs", "cloudflared"]
 }
 
 resource "random_id" "growlithe" {
@@ -136,7 +145,7 @@ resource "random_id" "growlithe" {
 resource "talos_machine_configuration_apply" "growlithe" {
   client_configuration        = data.talos_client_configuration.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.worker.machine_configuration
-  node                        = "192.168.1.165"
+  node                        = "growlithe"
 
   config_patches = [
     jsonencode({
@@ -157,6 +166,7 @@ resource "talos_machine_configuration_apply" "growlithe" {
     }),
     local.kubelet_ca_patch,
     local.tailnet_worker_patch,
+    local.cloudflared_patch,
     local.cluster_domain_patch,
     local.cni_patch
   ]

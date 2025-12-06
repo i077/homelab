@@ -24,6 +24,10 @@ terraform {
       source  = "hashicorp/tls"
       version = "~> 4.1.0"
     }
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 5.13.0"
+    }
   }
 
   backend "s3" {
@@ -45,3 +49,5 @@ provider "talos" {}
 provider "tailscale" {}
 
 provider "helm" {}
+
+provider "cloudflare" {}

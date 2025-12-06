@@ -8,6 +8,8 @@ spec:
   blocks:
     - start: "192.168.1.75"
       stop: "192.168.1.99"
+    - start: fd00::1:1
+      stop: fd00::1:255
 ---
 # yaml-language-server: $schema=https://kubeschema.imranh.org/cilium.io/v2alpha1/ciliuml2announcementpolicy
 apiVersion: cilium.io/v2alpha1
