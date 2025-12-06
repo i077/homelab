@@ -1,21 +1,23 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ],
+  "extends": ["config:recommended"],
   "flux": {
     "managerFilePatterns": [
       "/(?:^|/)gotk-components\\.ya?ml$/",
       "/k8s/.+\\.yaml/"
     ]
   },
+  "kubernetes": {
+    "managerFilePatterns": [
+      "/k8s/02-addons/.+\\.yaml$/",
+      "/k8s/03-apps/.+\\.yaml$/"
+    ]
+  },
   "customManagers": [
     {
       "customType": "regex",
       "description": "Process CRD dependencies",
-      "managerFilePatterns": [
-        "/cluster/.+\\.ya?ml$/"
-      ],
+      "managerFilePatterns": ["/cluster/.+\\.ya?ml$/"],
       "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}helm{{/if}}",
       "matchStrings": [
         "registryUrl=(?<registryUrl>\\S+) chart=(?<depName>\\S+)\n.*?(?<currentValue>[^-\\s]*)\n",
