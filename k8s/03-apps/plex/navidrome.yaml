@@ -48,6 +48,7 @@ data:
     TranscodingCacheSize = "4GB"
     Scanner.Enabled = true
     Scanner.Schedule = "12h"
+    Tags.Genre.Split = ['; ']
 ---
 # yaml-language-server: $schema=https://kubeschema.imranh.org/apps/v1/deployment
 apiVersion: apps/v1
