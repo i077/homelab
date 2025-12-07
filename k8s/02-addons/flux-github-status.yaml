@@ -1,0 +1,50 @@
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/external-secrets.io/v1/externalsecret
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: github-token
+  namespace: flux-system
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  dataFrom:
+    - extract:
+        key: "Flux GitHub PAT"
+  target:
+    template:
+      type: Opaque
+      data:
+        token: "{{ .credential }}"
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/notification.toolkit.fluxcd.io/v1beta3/provider
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Provider
+metadata:
+  name: github-status
+  namespace: flux-system
+spec:
+  type: github
+  address: https://github.com/i077/homelab
+  secretRef:
+    name: github-token
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/notification.toolkit.fluxcd.io/v1beta3/alert
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Alert
+metadata:
+  name: github-status
+  namespace: flux-system
+spec:
+  providerRef:
+    name: github-status
+  eventSources:
+    - kind: Kustomization
+      name: flux-system
+    - kind: Kustomization
+      name: crds
+    - kind: Kustomization
+      name: addons
+    - kind: Kustomization
+      name: apps

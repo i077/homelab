@@ -9,6 +9,7 @@ resources:
   - metrics-server.yaml
   - storage
   - secrets
+  - flux-github-status.yaml
 patches:
   # Label namespaces
   - target:
