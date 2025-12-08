@@ -100,7 +100,7 @@ module "image_cubone" {
 resource "talos_machine_configuration_apply" "cubone" {
   client_configuration        = data.talos_client_configuration.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
-  node                        = "192.168.1.163"
+  node                        = "cubone"
 
   config_patches = [
     jsonencode({
@@ -136,7 +136,7 @@ resource "random_id" "growlithe" {
 resource "talos_machine_configuration_apply" "growlithe" {
   client_configuration        = data.talos_client_configuration.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.worker.machine_configuration
-  node                        = "192.168.1.165"
+  node                        = "growlithe"
 
   config_patches = [
     jsonencode({
