@@ -44,8 +44,6 @@
             (nv "TAILSCALE_API_KEY" "op://Private/Tailscale/api key")
             (nv "AWS_ACCESS_KEY_ID" "op://Private/Backblaze/application key/id")
             (nv "AWS_SECRET_ACCESS_KEY" "op://Private/Backblaze/application key/key")
-            (nv "CLOUDFLARE_API_TOKEN" "op://Private/Cloudflare/API/terraform api token")
-            (nv "TF_VAR_cloudflare_account_id" "op://Private/Cloudflare/API/account id")
           ];
         };
         treefmt = {
