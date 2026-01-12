@@ -32,7 +32,8 @@ resource "talos_machine_configuration_apply" "cubone" {
     local.cluster_config_patch,
     local.cluster_domain_patch,
     local.cni_patch_controlplane,
-    local.cni_patch
+    local.cni_patch,
+    local.talos_api_access_patch,
   ]
 }
 
@@ -78,6 +79,6 @@ resource "talos_machine_configuration_apply" "growlithe" {
     local.kubelet_ca_patch,
     local.tailnet_worker_patch,
     local.cluster_domain_patch,
-    local.cni_patch
+    local.cni_patch,
   ]
 }

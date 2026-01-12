@@ -1,0 +1,91 @@
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/external-secrets.io/v1/externalsecret
+# Credentials for accessing the bucket
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: talos-backup-creds
+  namespace: storage
+spec:
+  dataFrom:
+    - extract:
+        key: Velero B2 key
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  target:
+    template:
+      data:
+        AWS_ACCESS_KEY_ID: "{{ .username }}"
+        AWS_SECRET_ACCESS_KEY: "{{ .password }}"
+      type: Opaque
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/batch/v1/cronjob
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: talos-backup
+  namespace: storage
+spec:
+  schedule: 0/10 * * * *
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: talos-backup
+              image: ghcr.io/siderolabs/talos-backup:v0.1.0-beta.3
+              imagePullPolicy: IfNotPresent
+              command:
+                - /talos-backup
+              workingDir: /tmp
+              env:
+                - name: AWS_REGION
+                  value: us-east-005
+                - name: CUSTOM_S3_ENDPOINT
+                  value: https://s3.us-east-005.backblazeb2.com
+                - name: BUCKET
+                  value: imranh-backup
+                - name: CLUSTER_NAME
+                  value: homelab
+                - name: S3_PREFIX
+                  value: homelab/etcd
+                - name: AGE_X25519_PUBLIC_KEY
+                  value: age1t47d6ltjvdxyq2upfh9kplamq8xrmzzutm3ef30kwc9zeltnrd7q7chnmy
+                - name: ENABLE_COMPRESSION
+                  value: "true"
+              envFrom:
+                - secretRef:
+                    name: talos-backup-creds
+              resources: {}
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+                runAsGroup: 1000
+                runAsNonRoot: true
+                runAsUser: 1000
+                seccompProfile:
+                  type: RuntimeDefault
+              volumeMounts:
+                - mountPath: /tmp
+                  name: tmp
+                - mountPath: /var/run/secrets/talos.dev
+                  name: talos-secrets
+          restartPolicy: OnFailure
+          volumes:
+            - emptyDir: {}
+              name: tmp
+            - name: talos-secrets
+              secret:
+                secretName: talos-backup-talos-secrets
+---
+apiVersion: talos.dev/v1alpha1
+kind: ServiceAccount
+metadata:
+  name: talos-backup-talos-secrets
+  namespace: storage
+spec:
+  roles:
+    - os:etcd:backup
