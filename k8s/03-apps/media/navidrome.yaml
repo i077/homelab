@@ -4,7 +4,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: navidrome-data
-  namespace: plex
+  namespace: media
   labels:
     backup: daily
 spec:
@@ -21,7 +21,7 @@ apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: navidrome-lastfm-api
-  namespace: plex
+  namespace: media
 spec:
   secretStoreRef:
     kind: ClusterSecretStore
@@ -42,7 +42,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: navidrome-config
-  namespace: plex
+  namespace: media
 data:
   navidrome.toml: |-
     TranscodingCacheSize = "4GB"
@@ -55,7 +55,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: navidrome
-  namespace: plex
+  namespace: media
   labels:
     app.kubernetes.io/name: navidrome
 spec:
@@ -114,14 +114,14 @@ spec:
             claimName: navidrome-data
         - name: media
           persistentVolumeClaim:
-            claimName: plex-data
+            claimName: media-store
 ---
 # yaml-language-server: $schema=https://kubeschema.imranh.org/core/v1/service
 apiVersion: v1
 kind: Service
 metadata:
   name: navidrome
-  namespace: plex
+  namespace: media
 spec:
   type: ClusterIP
   ports:

@@ -1,11 +1,10 @@
 ---
-# yaml-language-server: $schema=https://kubeschema.imranh.org/kustomize.config.k8s.io/v1beta1/kustomization
+# yaml-language-server: $schema=https://www.schemastore.org/kustomization.json
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - namespace.yaml
-  - pvc-config.yaml
   - pvc-data.yaml
-  - release.yaml
+  - plex.yaml
   - data-samba-server.yaml
   - navidrome.yaml
