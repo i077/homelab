@@ -72,7 +72,7 @@ spec:
               memory: 32Mi
           env:
             - name: NAME # SMB share name
-              value: "Plex"
+              value: "Media"
           envFrom:
             - secretRef:
                 name: samba-credentials
