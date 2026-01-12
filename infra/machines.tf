@@ -14,12 +14,17 @@ resource "talos_machine_configuration_apply" "cubone" {
 
   config_patches = [
     jsonencode({
+      apiVersion = "v1alpha1"
+      kind       = "HostnameConfig"
+      hostname   = "cubone"
+      auto       = "off"
+    }),
+    jsonencode({
       machine = {
         install = {
           disk  = "/dev/mmcblk0"
           image = module.image_cubone.installer_url
         }
-        network = { hostname = "cubone" }
       }
     }),
     local.kubelet_ca_patch,
@@ -50,6 +55,12 @@ resource "talos_machine_configuration_apply" "growlithe" {
 
   config_patches = [
     jsonencode({
+      apiVersion = "v1alpha1"
+      kind       = "HostnameConfig"
+      hostname   = "growlithe"
+      auto       = "off"
+    }),
+    jsonencode({
       machine = {
         install = {
           disk  = "/dev/nvme0n1"
@@ -58,7 +69,6 @@ resource "talos_machine_configuration_apply" "growlithe" {
         kernel = {
           modules = [{ name = "zfs" }]
         }
-        network = { hostname = "growlithe" }
 
         nodeLabels = {
           "openebs.io/nodeid" = random_id.growlithe.hex
