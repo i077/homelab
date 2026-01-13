@@ -2,7 +2,7 @@ locals {
   cluster_name     = "homelab"
   cluster_endpoint = "kube.imranh.org"
 
-  k8s_version   = "1.34.2"
+  k8s_version   = "1.35.0"
   talos_version = "v1.12.0"
 }
 
