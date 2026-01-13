@@ -1,84 +1,27 @@
-module "image_cubone" {
-  source = "./modules/image-factory"
+module "cubone" {
+  source = "./modules/node"
 
-  talos_version   = local.talos_version
+  node_name       = "cubone"
+  controlplane    = true
+  install_disk    = "/dev/mmcblk0"
   extension_names = ["tailscale"]
   overlay_name    = "rpi_generic"
+
+  cluster_info        = local.cluster_info
+  bootstrap_manifests = local.bootstrap_manifests
 }
 
-# Control plane
-resource "talos_machine_configuration_apply" "cubone" {
-  client_configuration        = data.talos_client_configuration.this.client_configuration
-  machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
-  node                        = "cubone"
+module "growlithe" {
+  source = "./modules/node"
 
-  config_patches = [
-    jsonencode({
-      apiVersion = "v1alpha1"
-      kind       = "HostnameConfig"
-      hostname   = "cubone"
-      auto       = "off"
-    }),
-    jsonencode({
-      machine = {
-        install = {
-          disk  = "/dev/mmcblk0"
-          image = module.image_cubone.installer_url
-        }
-      }
-    }),
-    local.kubelet_ca_patch,
-    local.tailnet_patch,
-    local.cluster_config_patch,
-    local.cluster_domain_patch,
-    local.cni_patch_controlplane,
-    local.cni_patch,
-    local.talos_api_access_patch,
-  ]
-}
-
-module "image_growlithe" {
-  source = "./modules/image-factory"
-
-  talos_version   = local.talos_version
+  node_name       = "growlithe"
+  controlplane    = false
+  install_disk    = "/dev/nvme0n1"
+  kernel_modules  = [{ name = "zfs" }]
+  openebs_nodeid  = "b5103cce"
   extension_names = ["intel-ucode", "tailscale", "zfs"]
+
+  cluster_info        = local.cluster_info
+  bootstrap_manifests = local.bootstrap_manifests
 }
 
-resource "random_id" "growlithe" {
-  byte_length = 4
-}
-
-# Data plane
-resource "talos_machine_configuration_apply" "growlithe" {
-  client_configuration        = data.talos_client_configuration.this.client_configuration
-  machine_configuration_input = data.talos_machine_configuration.worker.machine_configuration
-  node                        = "growlithe"
-
-  config_patches = [
-    jsonencode({
-      apiVersion = "v1alpha1"
-      kind       = "HostnameConfig"
-      hostname   = "growlithe"
-      auto       = "off"
-    }),
-    jsonencode({
-      machine = {
-        install = {
-          disk  = "/dev/nvme0n1"
-          image = module.image_growlithe.installer_url
-        }
-        kernel = {
-          modules = [{ name = "zfs" }]
-        }
-
-        nodeLabels = {
-          "openebs.io/nodeid" = random_id.growlithe.hex
-        }
-      }
-    }),
-    local.kubelet_ca_patch,
-    local.tailnet_worker_patch,
-    local.cluster_domain_patch,
-    local.cni_patch,
-  ]
-}

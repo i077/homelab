@@ -22,7 +22,7 @@ data "helm_template" "cilium" {
   repository   = "https://helm.cilium.io/"
   chart        = "cilium"
   version      = "1.18.2"
-  kube_version = local.k8s_version
+  kube_version = local.cluster_info.kubernetes_version
 
   name      = "cilium"
   namespace = "kube-system"

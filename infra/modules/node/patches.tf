@@ -3,32 +3,23 @@ locals {
     apiVersion = "v1alpha1"
     kind       = "ExtensionServiceConfig"
     name       = "tailscale"
-    environment = [
-      "TS_AUTHKEY=${tailscale_tailnet_key.tsauth.key}",
+    environment = concat([
+      "TS_AUTHKEY=${var.cluster_info.tailnet_auth_key}",
       "TS_ACCEPT_DNS=true",
-      "TS_EXTRA_ARGS=--reset"
-    ]
-  })
-
-  tailnet_worker_patch = jsonencode({
-    apiVersion = "v1alpha1"
-    kind       = "ExtensionServiceConfig"
-    name       = "tailscale"
-    environment = [
-      "TS_AUTHKEY=${tailscale_tailnet_key.tsauth.key}",
-      "TS_ACCEPT_DNS=true",
+      "TS_EXTRA_ARGS=--reset",
       "TS_USERSPACE=false",
+      ], var.controlplane ? [] : [
+      # Only advertise Service & Pod CIDRs from worker nodes
       "TS_ROUTES=10.96.0.0/12,10.244.0.0/16",
-      "TS_EXTRA_ARGS=--reset"
-    ]
+    ])
   })
 
   # Replace CNI & kube-proxy with Cilium
-  cni_patch_controlplane = jsonencode({
+  cni_install_patch = jsonencode({
     cluster = {
       inlineManifests = [
-        { name = "01-gateway-api", contents = data.http.gateway_api.response_body },
-        { name = "02-cilium", contents = data.helm_template.cilium.manifest }
+        { name = "01-gateway-api", contents = var.bootstrap_manifests.gateway_api },
+        { name = "02-cilium", contents = var.bootstrap_manifests.cilium_cni }
       ]
     }
   })
@@ -62,11 +53,11 @@ locals {
 
   cluster_config_patch = jsonencode({
     machine = {
-      certSANs = [local.cluster_endpoint]
+      certSANs = [var.cluster_info.cluster_endpoint]
     }
     cluster = {
       apiServer = {
-        certSANs = [local.cluster_endpoint]
+        certSANs = [var.cluster_info.cluster_endpoint]
       }
     }
   })

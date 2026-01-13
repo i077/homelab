@@ -1,40 +1,33 @@
 locals {
-  cluster_name     = "homelab"
-  cluster_endpoint = "kube.imranh.org"
+  cluster_info = {
+    cluster_name     = "homelab"
+    cluster_endpoint = "kube.imranh.org"
 
-  k8s_version   = "1.35.0"
-  talos_version = "v1.12.1"
+    talos_version      = "v1.12.1"
+    kubernetes_version = "1.35.0"
+
+    machine_secrets      = talos_machine_secrets.this.machine_secrets
+    client_configuration = talos_machine_secrets.this.client_configuration
+    tailnet_auth_key     = tailscale_tailnet_key.tsauth.key
+  }
+
+  bootstrap_manifests = {
+    cilium_cni  = data.helm_template.cilium.manifest
+    gateway_api = data.http.gateway_api.response_body
+  }
 }
 
 resource "talos_machine_secrets" "this" {}
-
-data "talos_machine_configuration" "controlplane" {
-  cluster_name       = local.cluster_name
-  cluster_endpoint   = var.cluster_endpoint
-  machine_type       = "controlplane"
-  machine_secrets    = talos_machine_secrets.this.machine_secrets
-  talos_version      = local.talos_version
-  kubernetes_version = local.k8s_version
-}
-
-data "talos_machine_configuration" "worker" {
-  cluster_name       = local.cluster_name
-  cluster_endpoint   = var.cluster_endpoint
-  machine_type       = "worker"
-  machine_secrets    = talos_machine_secrets.this.machine_secrets
-  talos_version      = local.talos_version
-  kubernetes_version = local.k8s_version
-}
-
-data "talos_client_configuration" "this" {
-  cluster_name         = local.cluster_name
-  client_configuration = talos_machine_secrets.this.client_configuration
-  endpoints            = [local.cluster_endpoint]
-}
 
 resource "tailscale_tailnet_key" "tsauth" {
   reusable      = true
   ephemeral     = false
   preauthorized = false
   description   = "Homelab cluster key"
+}
+
+data "talos_client_configuration" "this" {
+  cluster_name         = local.cluster_info.cluster_name
+  client_configuration = talos_machine_secrets.this.client_configuration
+  endpoints            = [local.cluster_info.cluster_endpoint]
 }
