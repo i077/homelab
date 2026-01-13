@@ -81,6 +81,7 @@ spec:
               secret:
                 secretName: talos-backup-talos-secrets
 ---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/talos.dev/v1alpha1/serviceaccount
 apiVersion: talos.dev/v1alpha1
 kind: ServiceAccount
 metadata:
