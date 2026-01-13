@@ -3,7 +3,7 @@ locals {
   cluster_endpoint = "kube.imranh.org"
 
   k8s_version   = "1.35.0"
-  talos_version = "v1.12.0"
+  talos_version = "v1.12.1"
 }
 
 resource "talos_machine_secrets" "this" {}
