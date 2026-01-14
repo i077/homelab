@@ -9,7 +9,7 @@ metadata:
 spec:
   dataFrom:
     - extract:
-        key: Velero B2 key
+        key: talos-backup B2 key
   secretStoreRef:
     kind: ClusterSecretStore
     name: onepassword
@@ -49,7 +49,7 @@ spec:
                 - name: CLUSTER_NAME
                   value: homelab
                 - name: S3_PREFIX
-                  value: homelab/etcd
+                  value: homelab-etcd
                 - name: AGE_X25519_PUBLIC_KEY
                   value: age1t47d6ltjvdxyq2upfh9kplamq8xrmzzutm3ef30kwc9zeltnrd7q7chnmy
                 - name: ENABLE_COMPRESSION
