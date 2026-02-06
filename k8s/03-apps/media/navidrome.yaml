@@ -49,6 +49,8 @@ data:
     Scanner.Enabled = true
     Scanner.Schedule = "12h"
     Tags.Genre.Split = ['; ']
+    Agents = "audiomuseai,lastfm,spotify,deezer"
+    AlbumPlayCountMode = "normalized"
 ---
 # yaml-language-server: $schema=https://kubeschema.imranh.org/apps/v1/deployment
 apiVersion: apps/v1
