@@ -10,7 +10,7 @@ spec:
   url: https://github.com/vmware-tanzu/helm-charts.git
   ref:
     # renovate: registryUrl=https://vmware-tanzu.github.io/helm-charts chart=velero
-    tag: velero-9.0.0
+    tag: velero-11.3.2
   # Exclude everything but the CRD directory
   ignore: |
     /*
