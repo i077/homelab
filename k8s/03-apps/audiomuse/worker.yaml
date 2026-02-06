@@ -1,0 +1,56 @@
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/apps/v1/deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: audiomuse-worker
+  namespace: audiomuse
+  labels:
+    app.kubernetes.io/name: worker
+    app.kubernetes.io/part-of: audiomuse
+    app.kubernetes.io/component: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: worker
+      app.kubernetes.io/part-of: audiomuse
+      app.kubernetes.io/component: worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: worker
+        app.kubernetes.io/part-of: audiomuse
+        app.kubernetes.io/component: worker
+    spec:
+      volumes:
+        - name: temp
+          emptyDir: {}
+      containers:
+        - name: worker
+          image: ghcr.io/neptunehub/audiomuse-ai:0.8.8
+          env:
+            - name: SERVICE_TYPE
+              value: worker
+          envFrom:
+            - configMapRef:
+                name: audiomuse-config
+            - secretRef:
+                name: audiomuse-database
+            - secretRef:
+                name: audiomuse-navidrome-creds
+          resources:
+            requests:
+              cpu: 500m
+              memory: 2Gi
+            limits:
+              cpu: 3000m
+              memory: 6Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: temp
+              mountPath: /app/temp_audio

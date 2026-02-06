@@ -1,0 +1,65 @@
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/apps/v1/deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: audiomuse-flask
+  namespace: audiomuse
+  labels:
+    app.kubernetes.io/name: audiomuse
+    app.kubernetes.io/part-of: audiomuse
+    app.kubernetes.io/component: flask
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: frontend
+      app.kubernetes.io/part-of: audiomuse
+      app.kubernetes.io/component: flask
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: frontend
+        app.kubernetes.io/part-of: audiomuse
+        app.kubernetes.io/component: flask
+    spec:
+      containers:
+        - name: frontend
+          image: ghcr.io/neptunehub/audiomuse-ai:0.8.8
+          env:
+            - name: SERVICE_TYPE
+              value: flask
+          envFrom:
+            - configMapRef:
+                name: audiomuse-config
+            - secretRef:
+                name: audiomuse-database
+            - secretRef:
+                name: audiomuse-navidrome-creds
+          ports:
+            - containerPort: 8000
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/core/v1/service
+apiVersion: v1
+kind: Service
+metadata:
+  name: audiomuse
+  namespace: audiomuse
+  labels:
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/part-of: audiomuse
+    app.kubernetes.io/component: flask
+spec:
+  selector:
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/part-of: audiomuse
+    app.kubernetes.io/component: flask
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000
