@@ -21,7 +21,7 @@ spec:
   interval: 6h
   url: https://github.com/alex1989hu/kubelet-serving-cert-approver.git
   ref:
-    tag: v0.10.2
+    tag: v0.10.3
   ignore: |
     /*
     !deploy/base
