@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ghcr.io/neptunehub/audiomuse-ai:0.8.8
+          image: ghcr.io/neptunehub/audiomuse-ai:0.8.9
           env:
             - name: SERVICE_TYPE
               value: flask
