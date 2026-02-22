@@ -4,7 +4,7 @@ locals {
     cluster_endpoint = "kube.imranh.org"
 
     talos_version      = "v1.12.4"
-    kubernetes_version = "1.35.0"
+    kubernetes_version = "1.35.1"
 
     machine_secrets      = talos_machine_secrets.this.machine_secrets
     client_configuration = talos_machine_secrets.this.client_configuration
