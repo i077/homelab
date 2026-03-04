@@ -107,7 +107,7 @@ spec:
       volumes:
         - name: cache
           emptyDir:
-            sizeLimit: 4Gi
+            sizeLimit: 6Gi
         - name: config
           configMap:
             name: navidrome-config
