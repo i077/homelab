@@ -7,7 +7,7 @@ metadata:
   namespace: audiomuse
 data:
   MEDIASERVER_TYPE: navidrome
-  NAVIDROME_URL: http://navidrome.media:4533
+  NAVIDROME_URL: http://navidrome.media
   CLAP_ENABLED: "true"
   TEMP_DIR: /app/temp_audio
   REDIS_URL: redis://redis:6379
