@@ -27,16 +27,16 @@ metadata:
   name: data-samba-server
   namespace: media
   labels:
-    app: data-samba-server
+    app.kubernetes.io/name: samba
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: data-samba-server
+      app.kubernetes.io/name: samba
   template:
     metadata:
       labels:
-        app: data-samba-server
+        app.kubernetes.io/name: samba
     spec:
       # Schedule on the same node as the Plex server
       affinity:
@@ -107,7 +107,7 @@ metadata:
   namespace: media
 spec:
   selector:
-    app: data-samba-server
+    app.kubernetes.io/name: samba
   ports:
     - protocol: TCP
       port: 445
