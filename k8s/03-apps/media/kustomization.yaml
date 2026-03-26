@@ -8,3 +8,4 @@ resources:
   - plex.yaml
   - data-samba-server.yaml
   - navidrome.yaml
+  - picard.yaml

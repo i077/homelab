@@ -1,0 +1,101 @@
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/core/v1/persistentvolumeclaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: picard-data
+  namespace: media
+  labels:
+    backup: daily
+spec:
+  storageClassName: zfs
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/core/v1/configmap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: picard-config
+  namespace: media
+data:
+  DARK_MODE: "1"
+  WEB_AUDIO: "1"
+  WEB_FILE_MANAGER: "1"
+  WEB_NOTIFICATIONS: "1"
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/apps/v1/deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: picard
+  namespace: media
+  labels:
+    app.kubernetes.io/name: picard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: picard
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: picard
+    spec:
+      containers:
+        - name: picard
+          image: jlesage/musicbrainz-picard:v26.03.1
+          envFrom:
+            - configMapRef:
+                name: picard-config
+          ports:
+            - containerPort: 5800
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /config
+            - name: media-store
+              mountPath: /storage
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: 1
+              memory: 2Gi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: picard-data
+        - name: media-store
+          persistentVolumeClaim:
+            claimName: media-store
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - samba
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/core/v1/service
+apiVersion: v1
+kind: Service
+metadata:
+  name: picard
+  namespace: media
+spec:
+  selector:
+    app.kubernetes.io/name: picard
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
