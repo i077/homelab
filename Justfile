@@ -10,6 +10,11 @@ reconcile:
 upgrade node:
     talosctl upgrade -n {{node}} --image $(op run -- tofu -chdir=infra output -json | jq -r .installer_urls.value.{{node}})
 
+# Update talosconfig from OpenTofu state
+[working-directory: 'infra']
+talosconfig:
+    op run -- tofu output -raw talos_config > ~/.talos/config
+
 # Apply OpenTofu configuration
 [working-directory: 'infra']
 apply:
