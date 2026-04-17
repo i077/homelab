@@ -6,31 +6,7 @@ metadata:
   name: audiomuse-config
   namespace: audiomuse
 data:
-  MEDIASERVER_TYPE: navidrome
-  NAVIDROME_URL: http://navidrome.media
-  CLAP_ENABLED: "true"
   TEMP_DIR: /app/temp_audio
   REDIS_URL: redis://redis:6379
   POSTGRES_HOST: postgres
   POSTGRES_PORT: "5432"
----
-# yaml-language-server: $schema=https://kubeschema.imranh.org/external-secrets.io/v1/externalsecret
-apiVersion: external-secrets.io/v1
-kind: ExternalSecret
-metadata:
-  name: audiomuse-navidrome-creds
-  namespace: audiomuse
-spec:
-  secretStoreRef:
-    kind: ClusterSecretStore
-    name: onepassword
-  dataFrom:
-    - extract:
-        key: "Audiomuse Navidrome user"
-  target:
-    template:
-      engineVersion: v2
-      type: Opaque
-      data:
-        NAVIDROME_USER: "{{ .username }}"
-        NAVIDROME_PASSWORD: "{{ .password }}"

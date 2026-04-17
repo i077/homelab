@@ -28,7 +28,7 @@ spec:
           emptyDir: {}
       containers:
         - name: worker
-          image: ghcr.io/neptunehub/audiomuse-ai:0.8.11
+          image: ghcr.io/neptunehub/audiomuse-ai:1.0.1
           env:
             - name: SERVICE_TYPE
               value: worker
@@ -37,8 +37,6 @@ spec:
                 name: audiomuse-config
             - secretRef:
                 name: audiomuse-database
-            - secretRef:
-                name: audiomuse-navidrome-creds
           resources:
             requests:
               cpu: 500m
