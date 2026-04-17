@@ -36,12 +36,25 @@ spec:
                 name: audiomuse-database
           ports:
             - containerPort: 8000
+              name: http
           resources:
             requests:
               cpu: 500m
               memory: 512Mi
             limits:
               memory: 2Gi
+          startupProbe:
+            httpGet:
+              port: http
+            initialDelaySeconds: 10
+          readinessProbe:
+            httpGet:
+              port: http
+            initialDelaySeconds: 10
+          livenessProbe:
+            httpGet:
+              port: http
+            initialDelaySeconds: 10
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
