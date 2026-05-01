@@ -92,5 +92,5 @@ data "helm_template" "cilium" {
 
 # Grab the Gateway API CRDs, a prereq. for Cilium's Gateway implementation
 data "http" "gateway_api" {
-  url = "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml"
+  url = "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.1/standard-install.yaml"
 }
