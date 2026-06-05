@@ -16,7 +16,7 @@ spec:
         kind: HelmRepository
         name: zfs-localpv
         namespace: flux-system
-      version: 2.9.1
+      version: 2.10.0
   values:
     crds:
       zfsLocalPv:
