@@ -18,13 +18,17 @@
       "commitMessageExtra": ""
     },
     {
-      "matchDatasources": ["helm"],
+      "matchDatasources": ["helm", "github-tags", "github-releases"],
       "commitMessagePrefix": "{{ depName }}:",
       "commitMessageTopic": ""
     },
     {
       "matchDepNames": ["plex-media-server"],
       "overrideDepName": "plex"
+    },
+    {
+      "matchDepNames": ["fluxcd/flux2"],
+      "overrideDepName": "flux"
     }
   ],
   "flux": {
