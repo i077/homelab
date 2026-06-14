@@ -28,7 +28,7 @@ spec:
           emptyDir: {}
       containers:
         - name: worker
-          image: ghcr.io/neptunehub/audiomuse-ai:2.1.4
+          image: ghcr.io/neptunehub/audiomuse-ai:2.2.0
           env:
             - name: SERVICE_TYPE
               value: worker
