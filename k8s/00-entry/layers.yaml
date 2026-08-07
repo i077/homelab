@@ -47,3 +47,6 @@ spec:
     name: flux-system
   dependsOn:
     - name: addons
+  postBuild:
+    substitute:
+      DOMAIN_BASE: lab.imranh.org

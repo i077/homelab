@@ -134,3 +134,26 @@ spec:
       protocol: TCP
   selector:
     app.kubernetes.io/name: navidrome
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/gateway.networking.k8s.io/v1/httproute
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: navidrome
+  namespace: media
+spec:
+  hostnames:
+    # yaml-language-server-disable String does not match the pattern
+    - navidrome.${DOMAIN_BASE}
+  parentRefs:
+    - kind: Gateway
+      name: cilium
+      namespace: gateway
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: navidrome
+          port: 80
