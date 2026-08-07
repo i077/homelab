@@ -21,7 +21,7 @@ resource "tls_self_signed_cert" "cilium_common_ca" {
 data "helm_template" "cilium" {
   repository   = "https://helm.cilium.io/"
   chart        = "cilium"
-  version      = "1.19.3"
+  version      = "1.20.0"
   kube_version = local.cluster_info.kubernetes_version
 
   name      = "cilium"
@@ -59,6 +59,8 @@ data "helm_template" "cilium" {
 
       k8sServiceHost = "localhost"
       k8sServicePort = 7445
+
+      l7proxy = true
 
       gatewayAPI = {
         enabled           = true
