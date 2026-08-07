@@ -2,6 +2,7 @@
 # yaml-language-server: $schema=https://kubeschema.imranh.org/kustomize.config.k8s.io/v1beta1/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: flux-system
 resources:
   - external-secrets.yaml
   - metrics-server.yaml

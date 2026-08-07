@@ -4,7 +4,6 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: picard-data
-  namespace: media
   labels:
     backup: daily
 spec:
@@ -20,7 +19,6 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: picard-config
-  namespace: media
 data:
   DARK_MODE: "1"
   WEB_AUDIO: "1"
@@ -32,7 +30,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: picard
-  namespace: media
   labels:
     app.kubernetes.io/name: picard
 spec:
@@ -90,7 +87,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: picard
-  namespace: media
 spec:
   selector:
     app.kubernetes.io/name: picard

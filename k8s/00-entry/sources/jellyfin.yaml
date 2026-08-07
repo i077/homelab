@@ -4,6 +4,5 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: jellyfin
-  namespace: flux-system
 spec:
   url: https://jellyfin.github.io/jellyfin-helm

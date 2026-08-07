@@ -4,7 +4,6 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: navidrome-data
-  namespace: media
   labels:
     backup: daily
 spec:
@@ -21,7 +20,6 @@ apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: navidrome-lastfm-api
-  namespace: media
 spec:
   secretStoreRef:
     kind: ClusterSecretStore
@@ -42,7 +40,6 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: navidrome-config
-  namespace: media
 data:
   navidrome.toml: |-
     TranscodingCacheSize = "4GB"
@@ -57,7 +54,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: navidrome
-  namespace: media
   labels:
     app.kubernetes.io/name: navidrome
 spec:
@@ -124,7 +120,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: navidrome
-  namespace: media
 spec:
   type: ClusterIP
   ports:
@@ -140,7 +135,6 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: navidrome
-  namespace: media
 spec:
   hostnames:
     # yaml-language-server-disable String does not match the pattern

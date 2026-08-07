@@ -5,7 +5,6 @@ apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: velero-backup-creds
-  namespace: storage
 spec:
   secretStoreRef:
     kind: ClusterSecretStore
@@ -28,7 +27,6 @@ apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: velero-repo-credentials
-  namespace: storage
 spec:
   secretStoreRef:
     kind: ClusterSecretStore
@@ -47,7 +45,6 @@ apiVersion: velero.io/v1
 kind: BackupStorageLocation
 metadata:
   name: default
-  namespace: storage
 spec:
   provider: aws
   objectStorage:

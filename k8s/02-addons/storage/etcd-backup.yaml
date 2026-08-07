@@ -5,7 +5,6 @@ apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: talos-backup-creds
-  namespace: storage
 spec:
   dataFrom:
     - extract:
@@ -25,7 +24,6 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: talos-backup
-  namespace: storage
 spec:
   schedule: 0/10 * * * *
   jobTemplate:
@@ -86,7 +84,6 @@ apiVersion: talos.dev/v1alpha1
 kind: ServiceAccount
 metadata:
   name: talos-backup-talos-secrets
-  namespace: storage
 spec:
   roles:
     - os:etcd:backup
