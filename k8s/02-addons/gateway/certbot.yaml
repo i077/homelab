@@ -1,0 +1,174 @@
+# CronJob to get & renew Let's Encrypt certificate for lab domain.
+# I don't use cert-manager here because it seems unnecessary: I just need one cert on one Gateway.
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/external-secrets.io/v1/externalsecret
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: certbot-creds
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  dataFrom:
+    - extract:
+        key: "Cloudflare certbot token"
+  target:
+    template:
+      engineVersion: v2
+      type: Opaque
+      data:
+        cloudflare.ini: |-
+          dns_cloudflare_api_token = {{ .credential }}
+        LETSENCRYPT_EMAIL: "{{ .username }}"
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/core/v1/serviceaccount
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cert-renewer
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/rbac.authorization.k8s.io/v1/role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cert-renewer
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "create", "update", "patch"]
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/rbac.authorization.k8s.io/v1/rolebinding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cert-renewer
+subjects:
+  - kind: ServiceAccount
+    name: cert-renewer
+    namespace: gateway
+roleRef:
+  kind: Role
+  name: cert-renewer
+  apiGroup: rbac.authorization.k8s.io
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/core/v1/configmap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cert-renewer-script
+data:
+  renew.sh: |
+    #!/bin/sh
+    set -eu
+
+    : "${LETSENCRYPT_EMAIL:?must set LETSENCRYPT_EMAIL}"
+    DOMAIN=lab.imranh.org
+    CERT_SECRET_NAME=gateway-tls
+    RENEW_BEFORE_SECONDS="${RENEW_BEFORE_SECONDS:-2592000}"   # 30 days
+
+    echo "Checking existing Secret ${CERT_SECRET_NAME}"
+
+    EXISTING_CERT_B64="$(kubectl get secret "${CERT_SECRET_NAME}" \
+      -o jsonpath='{.data.tls\.crt}' 2>/dev/null || true)"
+
+    if [ -n "${EXISTING_CERT_B64}" ]; then
+      echo "${EXISTING_CERT_B64}" | base64 -d > /tmp/existing.crt
+
+      if openssl x509 -in /tmp/existing.crt -checkend "${RENEW_BEFORE_SECONDS}" -noout; then
+        echo "Existing certificate has more than $((RENEW_BEFORE_SECONDS / 86400)) days left. Nothing to do."
+        exit 0
+      fi
+
+      echo "Existing certificate expires soon, renewing certificate."
+    else
+      echo "No existing Secret found, requesting initial certificate."
+    fi
+
+    certbot certonly \
+      --non-interactive \
+      --agree-tos \
+      --email "${LETSENCRYPT_EMAIL}" \
+      --dns-cloudflare \
+      --dns-cloudflare-credentials /etc/cloudflare/cloudflare.ini \
+      --dns-cloudflare-propagation-seconds 30 \
+      -d "${DOMAIN}" \
+      -d "*.${DOMAIN}" \
+      --cert-name "${DOMAIN}" \
+      --config-dir /etc/letsencrypt \
+      --work-dir /var/lib/letsencrypt \
+      --logs-dir /var/log/letsencrypt
+
+    LIVE_DIR="/etc/letsencrypt/live/${DOMAIN}"
+
+    if [ ! -f "${LIVE_DIR}/fullchain.pem" ] || [ ! -f "${LIVE_DIR}/privkey.pem" ]; then
+      echo "ERROR: expected cert files not found in ${LIVE_DIR}" >&2
+      exit 1
+    fi
+
+    echo "Publishing to Secret ${CERT_SECRET_NAME}"
+
+    kubectl create secret tls "${CERT_SECRET_NAME}" \
+      --cert="${LIVE_DIR}/fullchain.pem" \
+      --key="${LIVE_DIR}/privkey.pem"
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/batch/v1/cronjob
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: letsencrypt-wildcard-renew
+spec:
+  schedule: 17 3 * * *
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          serviceAccountName: cert-renewer
+          restartPolicy: Never
+          containers:
+            # Copy kubectl from nixery image
+            - name: fetch-kubectl
+              image: nixery.dev/shell/kubectl
+              command:
+                - /bin/sh
+                - -c
+                - cp /bin/kubectl /out
+              volumeMounts:
+                - name: kubectl
+                  mountPath: /out
+            - name: certbot
+              image: certbot/dns-cloudflare:v5.7.0
+              command: ["/bin/sh", "/scripts/renew.sh"]
+              env:
+                - name: LETSENCRYPT_EMAIL
+                  valueFrom:
+                    secretKeyRef:
+                      name: certbot-creds
+                      key: LETSENCRYPT_EMAIL
+              volumeMounts:
+                - name: script
+                  mountPath: /scripts
+                - name: cloudflare-creds
+                  mountPath: /etc/cloudflare
+                  readOnly: true
+                - name: kubectl
+                  mountPath: /usr/local/bin/kubectl
+                  subPath: kubectl
+          volumes:
+            - name: script
+              configMap:
+                name: cert-renewer-script
+                defaultMode: 0755
+            - name: cloudflare-creds
+              secret:
+                secretName: certbot-creds
+                items:
+                  - key: cloudflare.ini
+                    path: cloudflare.ini
+                defaultMode: 0600
+            - name: kubectl
+              emptyDir: {}
