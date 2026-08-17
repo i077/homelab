@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
         - name: picard
-          image: jlesage/musicbrainz-picard:v26.07.1
+          image: jlesage/musicbrainz-picard:v26.08.2
           envFrom:
             - configMapRef:
                 name: picard-config
