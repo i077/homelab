@@ -110,7 +110,8 @@ data:
 
     kubectl create secret tls "${CERT_SECRET_NAME}" \
       --cert="${LIVE_DIR}/fullchain.pem" \
-      --key="${LIVE_DIR}/privkey.pem"
+      --key="${LIVE_DIR}/privkey.pem" \
+      --dry-run=client -o yaml | kubectl apply -f -
 ---
 # yaml-language-server: $schema=https://kubeschema.imranh.org/batch/v1/cronjob
 apiVersion: batch/v1
