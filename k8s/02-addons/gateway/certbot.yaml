@@ -142,7 +142,7 @@ spec:
                 - name: kubectl
                   mountPath: /out
             - name: certbot
-              image: certbot/dns-cloudflare:v5.7.0
+              image: certbot/dns-cloudflare:v5.8.0
               command: ["/bin/sh", "/scripts/renew.sh"]
               env:
                 - name: LETSENCRYPT_EMAIL
