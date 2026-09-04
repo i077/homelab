@@ -11,7 +11,7 @@ spec:
     name: onepassword
   dataFrom:
     - extract:
-        key: "Velero B2 key"
+        key: "Velero-B2-key"
   target:
     template:
       type: Opaque
@@ -33,7 +33,7 @@ spec:
     name: onepassword
   dataFrom:
     - extract:
-        key: "Velero repository"
+        key: "Velero-repository"
   target:
     template:
       type: Opaque

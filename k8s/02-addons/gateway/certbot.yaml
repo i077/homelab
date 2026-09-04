@@ -12,7 +12,7 @@ spec:
     name: onepassword
   dataFrom:
     - extract:
-        key: "Cloudflare certbot token"
+        key: "Cloudflare-certbot-token"
   target:
     template:
       engineVersion: v2

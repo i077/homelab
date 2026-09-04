@@ -26,7 +26,7 @@ spec:
     name: onepassword
   dataFrom:
     - extract:
-        key: "Last.fm API"
+        key: "Last.fm-API"
   target:
     template:
       engineVersion: v2

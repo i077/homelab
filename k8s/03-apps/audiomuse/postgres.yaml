@@ -10,7 +10,7 @@ spec:
     name: onepassword
   dataFrom:
     - extract:
-        key: "Audiomuse database"
+        key: "Audiomuse-database"
   target:
     template:
       engineVersion: v2
