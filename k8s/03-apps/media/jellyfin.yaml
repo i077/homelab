@@ -1,0 +1,42 @@
+---
+# yaml-language-server: $schema=https://kubeschema.imranh.org/helm.toolkit.fluxcd.io/v2/helmrelease
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: jellyfin
+spec:
+  chart:
+    spec:
+      chart: jellyfin
+      sourceRef:
+        kind: HelmRepository
+        name: jellyfin
+        namespace: flux-system
+      version: 3.2.0
+  interval: 1h
+  values:
+    persistence:
+      cache:
+        enabled: true
+        size: 10Gi
+        storageClass: zfs
+      config:
+        enabled: true
+        size: 5Gi
+        labels:
+          backup: daily
+        storageClass: zfs
+      media:
+        enabled: true
+        existingClaim: media-store
+
+    resources:
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
+
+    service:
+      port: 80

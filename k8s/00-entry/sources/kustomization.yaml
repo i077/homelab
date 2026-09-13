@@ -9,6 +9,7 @@ resources:
   - zfs-localpv.yaml
   - vmware-tanzu.yaml
   - plex.yaml
+  - jellyfin.yaml
 patches:
   # Specify default fetch interval & timeout
   - target:
