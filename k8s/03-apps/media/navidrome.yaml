@@ -10,7 +10,7 @@ spec:
   storageClassName: zfs
   resources:
     requests:
-      storage: 4Gi
+      storage: 8Gi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
