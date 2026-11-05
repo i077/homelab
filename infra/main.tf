@@ -3,7 +3,7 @@ locals {
     cluster_name     = "homelab"
     cluster_endpoint = "kube.imranh.org"
 
-    talos_version      = "v1.13.7"
+    talos_version      = "v1.14.5"
     kubernetes_version = "1.36.3"
 
     machine_secrets      = talos_machine_secrets.this.machine_secrets
