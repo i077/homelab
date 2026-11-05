@@ -36,17 +36,6 @@ spec:
       labels:
         app.kubernetes.io/name: samba
     spec:
-      # Schedule on the same node as the Plex server
-      affinity:
-        podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: app
-                    operator: In
-                    values:
-                      - plex-media-server
-              topologyKey: kubernetes.io/hostname
       containers:
         - name: samba-server
           image: dockurr/samba:4.23
