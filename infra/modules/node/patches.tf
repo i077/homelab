@@ -25,41 +25,62 @@ locals {
   })
 
   cni_patch = jsonencode({
-    machine = {
-      kubelet = {
-        nodeIP = {
-          # Only use IP from the LAN's subnet
-          validSubnets = ["192.168.0.0/16"]
-        }
-      }
-
-      features = {
-        hostDNS = {
-          enabled = true
-          # Disable forwarding DNS to host, since this is incompatible with Cilium:
-          # https://www.talos.dev/v1.9/kubernetes-guides/network/deploying-cilium/#known-issues
-          forwardKubeDNSToHost = false
-        }
-      }
+    apiVersion = "v1alpha1"
+    kind       = "KubeNodeConfig"
+    nodeIP = {
+      # Only use IP from the LAN's subnet
+      validSubnets = ["192.168.0.0/16"]
     }
+    labels = var.openebs_nodeid != null ? {
+      "openebs.io/nodeid" = var.openebs_nodeid
+    } : {}
+  })
 
-    cluster = {
-      proxy = { disabled = true }
-      network = {
-        cni = { name = "none" }
-      }
+  kubelet_ca_patch = jsonencode({
+    apiVersion = "v1alpha1"
+    kind       = "KubeletConfig"
+    extraArgs = {
+      "rotate-server-certificates" = true
     }
+  })
+
+  resolver_patch = jsonencode({
+    apiVersion = "v1alpha1"
+    kind       = "ResolverConfig"
+    hostDNS = {
+      enabled              = true
+      forwardKubeDNSToHost = false
+    }
+  })
+
+  kube_network_patch = jsonencode({
+    apiVersion = "v1alpha1"
+    kind       = "KubeNetworkConfig"
+    dnsDomain  = "home.arpa"
   })
 
   cluster_config_patch = jsonencode({
     machine = {
       certSANs = [var.cluster_info.cluster_endpoint]
     }
-    cluster = {
-      apiServer = {
-        certSANs = [var.cluster_info.cluster_endpoint]
-      }
-    }
+  })
+
+  kube_apiserver_patch = jsonencode({
+    apiVersion    = "v1alpha1"
+    kind          = "KubeAPIServerConfig"
+    certExtraSANs = [var.cluster_info.cluster_endpoint]
+  })
+
+  kube_proxy_patch = jsonencode({
+    apiVersion = "v1alpha1"
+    kind       = "KubeProxyConfig"
+    enabled    = false
+  })
+
+  flannel_delete_patch = jsonencode({
+    apiVersion = "v1alpha1"
+    kind       = "KubeFlannelCNIConfig"
+    "$patch"   = "delete"
   })
 
   talos_api_access_patch = jsonencode({
@@ -74,19 +95,4 @@ locals {
     }
   })
 
-  cluster_domain_patch = jsonencode({
-    cluster = {
-      network = { dnsDomain = "home.arpa" }
-    }
-  })
-
-  kubelet_ca_patch = jsonencode({
-    machine = {
-      kubelet = {
-        extraArgs = {
-          rotate-server-certificates = true
-        }
-      }
-    }
-  })
 }

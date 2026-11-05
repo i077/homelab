@@ -22,33 +22,41 @@ resource "talos_machine_configuration_apply" "this" {
   config_patches = concat([
     jsonencode({
       apiVersion = "v1alpha1"
+      kind       = "UnattendedInstallConfig"
+      installer = {
+        image = data.talos_image_factory_urls.this.urls.installer
+      }
+      provisioning = {
+        diskSelector = {
+          match = format("disk.dev_path == %s", jsonencode(var.install_disk))
+        }
+      }
+    }),
+    jsonencode({
+      apiVersion = "v1alpha1"
       kind       = "HostnameConfig"
       hostname   = var.node_name
       auto       = "off"
     }),
     jsonencode({
       machine = {
-        install = {
-          disk  = var.install_disk
-          image = data.talos_image_factory_urls.this.urls.installer
-        }
         kernel = {
           modules = var.kernel_modules
         }
-
-        nodeLabels = var.openebs_nodeid != null ? {
-          "openebs.io/nodeid" = var.openebs_nodeid
-        } : {}
       }
     }),
     local.kubelet_ca_patch,
     local.tailnet_patch,
-    local.cluster_domain_patch,
+    local.resolver_patch,
+    local.kube_network_patch,
     local.cni_patch,
     ],
     var.controlplane ? [
       local.cni_install_patch,
       local.cluster_config_patch,
+      local.kube_apiserver_patch,
+      local.kube_proxy_patch,
+      local.flannel_delete_patch,
       local.talos_api_access_patch,
     ] : [],
   )
