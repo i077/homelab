@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - media
   - audiomuse
+  - bookorbit
 patches:
   # Label namespaces
   - target:
