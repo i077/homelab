@@ -62,7 +62,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: bookorbit
-          image: ghcr.io/bookorbit/bookorbit:3.6.0
+          image: ghcr.io/bookorbit/bookorbit:3.7.0
           ports:
             - containerPort: 3000
               name: http
